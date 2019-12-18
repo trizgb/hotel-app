@@ -1,7 +1,7 @@
 import * as React from 'react';
 import './app.scss';
 import requestAPI from './modules/services/service';
-import ListItem from './compontes/list-item';
+import ListItem from './components/list-item';
 
 
 const App = () => {
@@ -22,7 +22,7 @@ const App = () => {
             .catch(console.error)
     }
 
-    function changeDateFormat(date) {
+    function formatDate(date) {
         let splitDate = date.split('-');
 
         if (splitDate.count === 0) {
@@ -51,6 +51,10 @@ const App = () => {
         const currentDate = getCurrentDate();
 
         if (!!hotel && !!checkinDate && !!nights) {
+
+            if(hotel === 'Elige un hotel') {
+                setFeedbackMessage('Elija un hotel, por favor. ☺️')
+            }
 
             if (checkinDate >= currentDate) {
                 getHotelFromApi();
@@ -91,8 +95,8 @@ const App = () => {
                     }
                     <form className={'form'}>
                         <div className={'form-group select'}>
-                            <label></label>
-                            <select onChange={(e) => setHotel(e.currentTarget.value)}>
+                            <label htmlFor={'select-hotel'}></label>
+                            <select id={'select-hotel'} onChange={(e) => setHotel(e.currentTarget.value)}>
                                 <option defaultValue>Elige un hotel</option>
                                 <option value={44069509}>Hotel Baqueira Val de Neu</option>
                                 <option value={100376478}>Hotel Grand Luxor</option>
@@ -100,12 +104,12 @@ const App = () => {
                             </select>
                         </div>
                         <div className={'form-group search-input'}>
-                            <label></label>
-                            <input type="date" placeholder={'Check-in'} onChange={(e) => setCheckinDate(changeDateFormat(e.currentTarget.value))} />
+                            <label htmlFor={'input-checkin'}></label>
+                            <input id={'input-checkin'} type="date" placeholder={'Check-in'} onChange={(e) => setCheckinDate(formatDate(e.currentTarget.value))} />
                         </div>
                         <div className={'form-group search-input'}>
-                            <label></label>
-                            <input type="number" placeholder={'Número de noches'} onChange={(e) => setNigths(e.currentTarget.value)} />
+                            <label htmlFor={'input-nights'}></label>
+                            <input id={'input-nights'} type="number" placeholder={'Número de noches'} onChange={(e) => setNigths(e.currentTarget.value)} />
                         </div>
                         <input type={'submit'} onClick={onSubmit} value={'Buscar'} className={'button'} />
                     </form>
