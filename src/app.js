@@ -1,6 +1,7 @@
 import * as React from 'react';
 import './app.scss';
 import requestAPI from './modules/services/service';
+import ListItem from './compontes/list-item';
 
 
 const App = () => {
@@ -9,20 +10,16 @@ const App = () => {
     const [checkinDate, setCheckinDate] = React.useState('');
     const [nights, setNigths] = React.useState(0);
     const [availableRates, setAvailableRates] = React.useState([]);
-    const [feedbackMessage, setFeedbackMessage] = React.useState('')
-    const [loading, setLoading] = React.useState(false)
+    const [feedbackMessage, setFeedbackMessage] = React.useState('');
 
 
     function getHotelFromApi() {
-        setLoading(true)
 
         requestAPI(hotel, checkinDate, nights)
             .then(response => {
-                console.log(response.availableRates[hotel])
                 setAvailableRates(response.availableRates[hotel])
             })
             .catch(console.error)
-            .finally(setLoading(false))
     }
 
     function changeDateFormat(date) {
@@ -51,9 +48,11 @@ const App = () => {
 
     function onSubmit(e) {
 
+        const currentDate = getCurrentDate();
+
         if (!!hotel && !!checkinDate && !!nights) {
 
-            if (checkinDate >= getCurrentDate) {
+            if (checkinDate >= currentDate) {
                 getHotelFromApi();
             } else {
                 setFeedbackMessage('Introduzca una fecha valida. Ésta tiene que ser igual o superior al día actual. ☺️');
@@ -68,88 +67,61 @@ const App = () => {
         } else {
             setFeedbackMessage('Complete todos los campos, por favor. ☺️');
         }
-
         e.preventDefault();
     }
 
+    React.useEffect(() => {
+        setFeedbackMessage('')
+    }, [hotel, checkinDate, nights])
 
     return (
-        <div className="app">
-            <header className="app-header">
-                <div className="app-header__wrapper" style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
-                    <img style={{ width: '110px', height: '43px' }} src={'assets/images/xlogo-mirai-es.png'} alt="logo" />
-                    <div>
-                        <h1>Encuentra la opción más barata</h1>
-                    </div>
+        <div className={'app'}>
+            <header className={'app-header'}>
+                <div className={'app-header__wrapper'}>
+                    <img className={'app-header-logo'} src={'assets/images/hotel.png'} alt="logo" />
+                    <h1 className={'app-header-title'}>Offer Looking</h1>
                 </div>
-
             </header>
-            <main>
-                <section className={'form'}>
-                    <h2>Select your hotel</h2>
-                    <form>
-                        <div>
+            <main className={'app-main'}>
+                <section className={'app-main__section-search'}>
+                    <h2>Encuentra la opción más barata</h2>
+                    {feedbackMessage
+                        ? <span className={'feedback-message'}>{feedbackMessage}</span>
+                        : ''
+                    }
+                    <form className={'form'}>
+                        <div className={'form-group select'}>
                             <label></label>
                             <select onChange={(e) => setHotel(e.currentTarget.value)}>
-                                <option defaultValue>Choose an option</option>
+                                <option defaultValue>Elige un hotel</option>
                                 <option value={44069509}>Hotel Baqueira Val de Neu</option>
                                 <option value={100376478}>Hotel Grand Luxor</option>
                                 <option value={10030559}>Hotel Moderno</option>
                             </select>
                         </div>
-                        <div>
+                        <div className={'form-group search-input'}>
                             <label></label>
                             <input type="date" placeholder={'Check-in'} onChange={(e) => setCheckinDate(changeDateFormat(e.currentTarget.value))} />
                         </div>
-                        <div>
+                        <div className={'form-group search-input'}>
                             <label></label>
                             <input type="number" placeholder={'Número de noches'} onChange={(e) => setNigths(e.currentTarget.value)} />
                         </div>
-                        <input type={'submit'} onClick={onSubmit} value={'Buscar'} />
+                        <input type={'submit'} onClick={onSubmit} value={'Buscar'} className={'button'} />
                     </form>
                 </section>
-                <section className={'results'}>
+                <section className={'app-main__section-results'}>
                     <h2>Resultados de su búsqueda</h2>
                     {
                         availableRates
                             ? <div>
-                                <ul>
-                                    {availableRates.map((rates, i) =>
-                                        <li key={i}>
-                                            <ul>
-                                                <li>
-                                                    <h3>Nombre de la habitación</h3>
-                                                    {rates.roomName}
-                                                </li>
-                                                {rates.offerName ?
-                                                    <li>
-                                                        <h4>Nombre de la oferta</h4>
-                                                        {rates.offerName}
-                                                    </li>
-                                                    : ''}
-
-                                                <li>
-                                                    <h4>Régimen</h4>
-                                                    {rates.boardName}
-                                                </li>
-                                                <li>
-                                                    <h4>Ocupación</h4>
-                                                    {rates.occupancy.numAdults}
-                                                    {rates.occupancy.numChilds}
-                                                    {rates.occupancy.numBabies}
-                                                </li>
-                                                <li>
-                                                    <h4>Precio neto</h4>
-
-                                                    {}
-                                                </li>
-                                            </ul>
-                                        </li>)}
+                                <ul className={'app-main__section-results__list'}>
+                                    {availableRates.map((rates, i) => <ListItem key={i} {...rates} />
+                                    )}
                                 </ul>
                             </div>
                             : 'Lo sentimos, no hay tarifas disponibles'
                     }
-
                 </section>
             </main >
         </div >

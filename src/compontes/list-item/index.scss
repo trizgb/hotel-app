@@ -1,0 +1,49 @@
+@import "../../modules/commons/vars.scss";
+
+.list-item {
+  margin-bottom: $unit * 5;
+  padding: $unit;
+  list-style: none;
+  box-shadow: 0px 5px 8px 0px $gray4;
+
+  &__wrapper {
+    display: flex;
+  }
+
+  &__image-container {
+    position: relative;
+
+    .label {
+      padding: $unit;
+      background-color: green;
+      color: $white;
+      font-size: 12px;
+      text-transform: lowercase;
+      position: absolute;
+      top: $unit * 2;
+      left: -$unit * 3;
+    }
+
+    .image {
+      height: 200px;
+      width: 200px;
+    }
+  }
+
+  &__info {
+    width: 100%;
+    margin-left: $unit * 5;
+
+    &-title {
+    }
+    &-board {
+    }
+    &-occupancy {
+      span {
+        margin-right: $unit * 2;
+      }
+    }
+    &-price {
+    }
+  }
+}
