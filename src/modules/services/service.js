@@ -2,6 +2,7 @@ let base64 = require('base-64');
 
 // API que permite las CORS
 const proxyURL = "https://cors-anywhere.herokuapp.com/";
+
 const URL = 'https://api.mirai.com/MiraiWebService/availableRate/get';
 
 const URL_CORS = proxyURL + URL;
